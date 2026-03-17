@@ -8,9 +8,10 @@ import type { MemoResult } from "@/lib/gemini";
 type Props = {
   onSuccess: (result: MemoResult, meetingName: string) => void;
   onStart?: () => void;
+  onError?: () => void;
 };
 
-export default function MeetingForm({ onSuccess, onStart }: Props) {
+export default function MeetingForm({ onSuccess, onStart, onError }: Props) {
   const [meetingName, setMeetingName] = useState("");
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
@@ -25,19 +26,21 @@ export default function MeetingForm({ onSuccess, onStart }: Props) {
       const res = await fetch("/api/process", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ notes }),
+        body: JSON.stringify({ notes, meetingName }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
         setError(data.error ?? "Something went wrong. Please try again.");
+        onError?.();
         return;
       }
 
       onSuccess(data, meetingName);
     } catch {
       setError("Network error. Please check your connection and try again.");
+      onError?.();
     } finally {
       setLoading(false);
     }

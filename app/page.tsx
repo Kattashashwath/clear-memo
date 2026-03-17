@@ -24,6 +24,10 @@ export default function Home() {
     setLoading(false);
   };
 
+  const handleError = () => {
+    setLoading(false);
+  };
+
   return (
     <main className="max-w-2xl mx-auto px-4 py-12">
       {/* Header */}
@@ -36,7 +40,7 @@ export default function Home() {
 
       {/* Step 1 — Form (hidden once processing or done) */}
       {!loading && !result && (
-        <MeetingForm onSuccess={handleSuccess} onStart={handleStart} />
+        <MeetingForm onSuccess={handleSuccess} onStart={handleStart} onError={handleError} />
       )}
 
       {/* Step 2 — Processing state */}
